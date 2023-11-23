@@ -1,8 +1,8 @@
 {
-  "domain": "balance_neto",
-  "name": "Balance Neto",
+  "domain": "magazyn_energii",
+  "name": "Magazyn Energii",
   "codeowners": [
-    "@miguelangellv"
+    "@omenek159"
   ],
   "config_flow": true,
   "documentation": "https://github.com/MiguelAngelLV/balance_neto",

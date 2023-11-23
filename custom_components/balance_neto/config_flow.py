@@ -27,16 +27,18 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         ),
         vol.Required("grid_export"): EntitySelector(
             EntitySelectorConfig(multiple=False, device_class=SensorDeviceClass.ENERGY)
-        )
+        ),
+        vol.Required("storage_factor"): float
     }
 )
 
 
 class PlaceholderHub:
-    def __init__(self, grid_import: str, grid_export: str) -> None:
+    def __init__(self, grid_import: str, grid_export: str, storage_factor: float) -> None:
         """Initialize."""
         self.grid_import = grid_import
         self.grid_export = grid_export
+        self.storage_factor = storage_factor
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

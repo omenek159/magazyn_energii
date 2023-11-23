@@ -38,6 +38,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry):
                 new_unique_id = f"{entity_entry.config_entry_id}-export"
             if "balance" in entity_entry.unique_id:
                 new_unique_id = f"{entity_entry.config_entry_id}-balance"
+            if "storage" in entity_entry.unique_id:
+                new_unique_id = f"{entity_entry.config_entry_id}-storage"
 
             _LOGGER.debug("Updating unique_id from %s to %s", old_unique_id, new_unique_id)
             return {"new_unique_id": new_unique_id}

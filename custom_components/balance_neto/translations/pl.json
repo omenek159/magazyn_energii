@@ -7,7 +7,8 @@
       "user": {
         "data": {
           "grid_import": "Energia czynna pobrana - kWh",
-          "grid_export": "Energia czynna zwrócona - kWh"
+          "grid_export": "Energia czynna zwrócona - kWh",
+          "storage_factor": "Współczynnik magazynowania"
         }
       }
     }
@@ -22,6 +23,9 @@
       },
       "net_balance": {
         "name": "Energia - Bilans netto"
+      },
+      "storage": {
+        "name": "Magazyn"
       }
     }
   }

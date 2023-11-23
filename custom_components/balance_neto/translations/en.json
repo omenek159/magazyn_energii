@@ -7,7 +7,8 @@
       "user": {
         "data": {
           "grid_import": "Total imported kWh",
-          "grid_export": "Total exported kWh"
+          "grid_export": "Total exported kWh",
+          "storage_factor": "Storage factor"
         }
       }
     }
@@ -22,6 +23,9 @@
       },
       "net_balance": {
         "name": "Net balance"
+      },
+      "storage": {
+        "name": "Storage"
       }
     }
   }
