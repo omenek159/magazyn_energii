@@ -28,7 +28,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Required("grid_export"): EntitySelector(
             EntitySelectorConfig(multiple=False, device_class=SensorDeviceClass.ENERGY)
         ),
-        vol.Required("storage_factor"): str
+        vol.Required("storage_factor"): float
     }
 )
 
