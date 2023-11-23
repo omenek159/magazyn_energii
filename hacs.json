@@ -1,6 +1,6 @@
 {
-    "name": "Balance Neto",
+    "name": "Magazyn Energii",
     "render_readme": true,
     "homeassistant": "2023.1.0",
-    "country":"ES"
+    "country":"PL"
 }
