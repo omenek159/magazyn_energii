@@ -16,16 +16,16 @@
   "entity": {
     "sensor":{
       "net_exported": {
-        "name": "Energia - Export netto"
+        "name": "Magazyn Energii - Export netto"
       },
       "net_imported": {
-        "name": "Energia - Import netto"
+        "name": "Magazyn Energii - Import netto"
       },
       "net_balance": {
-        "name": "Energia - Bilans netto"
+        "name": "Magazyn Energii - Bilans netto"
       },
       "storage": {
-        "name": "Magazyn"
+        "name": "Magazyn Energii - Magazyn"
       }
     }
   }

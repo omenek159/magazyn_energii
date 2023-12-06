@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 import logging
 from typing import Mapping, Any
+import voluptuous as vol
 
 from homeassistant.components.sensor import (
     STATE_CLASS_TOTAL_INCREASING,
@@ -14,6 +15,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
 from homeassistant.core import HomeAssistant
 from homeassistant.core import State
+from homeassistant.core import ServiceCall
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_point_in_time
 from homeassistant.helpers.event import async_track_state_change
@@ -73,14 +75,14 @@ async def async_setup_entry(
 ) -> None:
     import_id = entry.data['grid_import']
     export_id = entry.data['grid_export']
-    storage_factor_id = entry.data['storage_factor']
+    storage_factor = entry.data['storage_factor']
 
-    storage_factor = float(hass.states.get(storage_factor_id).state)
+    _LOGGER.debug("storage_factor: %s", storage_factor)
 
     grid_import = GridSensor(IMPORT_DESCRIPTION, f"{entry.entry_id}-import")
     grid_export = GridSensor(EXPORT_DESCRIPTION, f"{entry.entry_id}-export")
 
-    grid_storage = StorageSensor(STORAGE_DESCRIPTION, grid_balance, storage_factor,  f"{entry.config_entry_id}-storage")
+    grid_storage = StorageSensor(STORAGE_DESCRIPTION, storage_factor, f"{entry.entry_id}-storage")
 
     grid_balance = BalanceSensor(BALANCE_DESCRIPTION, grid_import, grid_export, import_id, export_id, grid_storage, f"{entry.entry_id}-balance")
 
@@ -106,6 +108,18 @@ async def async_setup_entry(
     async_track_point_in_time(hass, update_totals_and_schedule, next)
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, first_after_reboot)
 
+    async def srv_set_storage(call: ServiceCall):
+        _LOGGER.debug("srv_set_storage: %s", call.data)
+        new_value = float(call.data["new_storage_value"])
+        grid_storage.set_value(new_value)
+
+    # srv_schema = vol.Schema(
+    #     {
+    #         vol.Required("new_storage_value"): str
+    #     }
+    # )
+
+    hass.services.async_register("magazyn_energii", "set_storage", srv_set_storage)
 
 class GridSensor(SensorEntity, RestoreEntity):
     def __init__(self, description: SensorEntityDescription, unique_id) -> None:
@@ -157,7 +171,6 @@ class StorageSensor(SensorEntity, RestoreEntity):
         await super().async_added_to_hass()
         if (last_sensor_data := await self.async_get_last_state()) is not None:
             self._state = last_sensor_data.state
-            self._balance_sensor = last_sensor_data.attributes.get('Balance', 0)
 
         self.async_write_ha_state()
 
@@ -165,19 +178,28 @@ class StorageSensor(SensorEntity, RestoreEntity):
     def native_value(self):
         return self._state
 
-    @property
-    def extra_state_attributes(self):
-        return {
-            'Balance': self._balance,
-        }
+    # @property
+    # def extra_state_attributes(self):
+    #     return {
+    #         'Balance': self._balance,
+    #     }
+
+    def set_value(self, new_value: float):
+        self._state = new_value
+        self.async_write_ha_state()
     
     def update_value(self, balance: float):
         #balance_state = float(self.hass.states.get(self._balance_id).state)
 
+        storage_state = float(self._state)
+
         if balance > 0:
-            self._state = self._state + balance * self._storage_factor
+            self._state = storage_state + balance * self._storage_factor
         else:
-            self._state = self._state + balance
+            self._state = storage_state + balance
+
+        if self._state < 0: self._state = 0
+        
         _LOGGER.debug("Actual Storage %f", self._state)
         self.async_write_ha_state()
 
@@ -286,7 +308,8 @@ class BalanceSensor(SensorEntity, RestoreEntity):
         else:
             self._import_sensor.update_value(-value)
 
-        self._storage_sensor.update_value()
+        _LOGGER.debug("Updating Storage Sensor: %f", value)
+        self._storage_sensor.update_value(value)
 
         self._update_value()
 

@@ -1,0 +1,11 @@
+set_storage:
+  description: Set storage value
+  fields:
+    new_storage_value:
+      required: true
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 100
+          mode: box
