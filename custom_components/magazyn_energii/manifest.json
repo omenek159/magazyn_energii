@@ -5,9 +5,9 @@
     "@omenek159"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/MiguelAngelLV/balance_neto",
+  "documentation": "https://github.com/omenek159/magazyn_energii",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/MiguelAngelLV/balance_neto/issues",
+  "issue_tracker": "https://github.com/omenek159/magazyn_energii",
   "requirements": [],
   "version": "0.1.0"
 }
