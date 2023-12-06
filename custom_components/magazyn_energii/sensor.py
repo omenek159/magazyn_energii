@@ -113,12 +113,6 @@ async def async_setup_entry(
         new_value = float(call.data["new_storage_value"])
         grid_storage.set_value(new_value)
 
-    # srv_schema = vol.Schema(
-    #     {
-    #         vol.Required("new_storage_value"): str
-    #     }
-    # )
-
     hass.services.async_register("magazyn_energii", "set_storage", srv_set_storage)
 
 class GridSensor(SensorEntity, RestoreEntity):
@@ -178,18 +172,11 @@ class StorageSensor(SensorEntity, RestoreEntity):
     def native_value(self):
         return self._state
 
-    # @property
-    # def extra_state_attributes(self):
-    #     return {
-    #         'Balance': self._balance,
-    #     }
-
     def set_value(self, new_value: float):
         self._state = new_value
         self.async_write_ha_state()
     
     def update_value(self, balance: float):
-        #balance_state = float(self.hass.states.get(self._balance_id).state)
 
         storage_state = float(self._state)
 
